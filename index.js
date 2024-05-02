@@ -26,7 +26,7 @@ class graph{
     addEdge(origin, destination){
         origin = this.arrToSring(origin);
         destination = this.arrToSring(destination);
-
+        
         this.adList.get(origin).push(destination);
     }
 
@@ -66,7 +66,44 @@ class graph{
         if(y + 2 <= 7 && x + 1 <= 7) this.addEdge(origin, [y + 2, x + 1]);
         if(y + 1 <= 7 && x + 2 <= 7) this.addEdge(origin, [y + 1, x + 2]);
     }
+
+    knightMoves(start, end){
+        let startBox = this.arrToSring(start);
+        let endBox = this.arrToSring(end);
+    
+        // BFS traversal to find the shortest path
+        let visited = new Set();
+        let queue = [[startBox]];
+        
+        while (queue.length > 0) {
+            let currentPath = queue.shift();
+            let currentBox = currentPath[currentPath.length - 1];
+            
+            if (!visited.has(currentBox)) {
+                visited.add(currentBox);
+                let movesFromCurrent = this.adList.get(currentBox);
+                
+                for (let move of movesFromCurrent) {
+                    let newPath = [...currentPath, move];
+    
+                    if (move === endBox) {
+                        // Found the shortest path
+                        let path = newPath.map(this.stringToArr);
+                        console.log(`reached in ${path.length - 1} moves!`);
+                        return path;
+                    }
+                    
+                    queue.push(newPath);
+                }
+            }
+        }
+        // If no path is found
+        return null;
+    }
 }
+
 let game = new graph;
-console.log(game);
-console.log(game.adList.get('0 - 4'));
+console.log(game.knightMoves([0, 0], [1, 2]));
+console.log(game.knightMoves([0, 0], [3, 3]));
+console.log(game.knightMoves([0, 0], [7, 7]));
+console.log(game.knightMoves([3, 3], [4, 7]));
